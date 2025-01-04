@@ -1,7 +1,8 @@
 
-from numpy import empty
+from turtle import color
 import streamlit as st
 from data_manipulation import data
+from streamlit_condition_tree import condition_tree, config_from_dataframe
 
 df = data()
 
@@ -13,8 +14,7 @@ col1,col2,col3 = st.columns(3)
 
 distinct_genre = df['genre'].drop_duplicates(keep='first').sort_values()
 
-with col1:
-    selected_date = st.date_input('Select date')
+
     
 
 with col2:
@@ -32,6 +32,18 @@ with col3:
                                         please select columns, without id chart can't be displayed""")
 
 filtered_data = df[selected_columns]
+with col1:
+    config = config_from_dataframe(filtered_data)
+    query_string = condition_tree(
+        config=config,
+        always_show_buttons=True,
+        placeholder='Filter',
+        min_height=100
+
+    )
+
+filtered_data = filtered_data.query(query_string)
+
 columns_list = filtered_data.columns
 
 
